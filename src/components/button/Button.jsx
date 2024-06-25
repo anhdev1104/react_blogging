@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import LoadingSpinner from '../loading/LoadingSpinner';
+import PropTypes from 'prop-types';
 
 const ButtonStyles = styled.button`
   cursor: pointer;
@@ -34,6 +35,13 @@ const Button = ({ type = 'button', onClick = () => {}, children, ...props }) => 
       {child}
     </ButtonStyles>
   );
+};
+
+Button.propTypes = {
+  type: PropTypes.oneOf(['button', 'submit']).isRequired,
+  isLoading: PropTypes.bool,
+  onClick: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export default Button;

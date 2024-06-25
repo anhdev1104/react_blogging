@@ -6,6 +6,8 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from './utils/constants.js';
 import { GlobalStyle } from './styles/GlobalStyles.js';
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -13,6 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <GlobalStyle></GlobalStyle>
       <BrowserRouter>
         <App />
+        <ToastContainer position="top-right" theme="colored" autoClose={3000} />
       </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>
