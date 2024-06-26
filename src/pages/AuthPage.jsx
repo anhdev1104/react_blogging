@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 const AuthPageStyles = styled.div`
@@ -17,13 +18,24 @@ const AuthPageStyles = styled.div`
     font-size: 40px;
     margin-bottom: 60px;
   }
+  .have-account {
+    margin-bottom: 20px;
+    a {
+      display: inline-block;
+      color: ${props => props.theme.primary};
+      font-weight: 500;
+      text-decoration: none;
+    }
+  }
 `;
 
 const AuthPage = ({ children }) => {
   return (
     <AuthPageStyles>
       <div className="container-page">
-        <img srcSet="/logo.png 2x" alt="Logo Monkey Blogging" className="logo" />
+        <NavLink to="/">
+          <img srcSet="/logo.png 2x" alt="Logo Monkey Blogging" className="logo" />
+        </NavLink>
         <h1 className="heading">Monkey Blogging</h1>
         {children}
       </div>

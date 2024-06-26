@@ -1,6 +1,6 @@
 import { AuthContext } from '@/contexts/authContext';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import AuthPage from './AuthPage';
 import { useForm } from 'react-hook-form';
 import Field from '@/components/field';
@@ -22,21 +22,20 @@ const schema = yup.object({
 const SignInPage = () => {
   const [togglePassword, setTogglePassword] = useState(false);
   const { userInfo } = useContext(AuthContext);
+  console.log('🚀 ~ SignInPage ~ userInfo:', userInfo);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!userInfo.email) {
-      navigate('/sign-in');
-    } else {
+    if (userInfo?.email) {
+      toast.info('You are already logged in. Do you want to logout and login again?');
       navigate('/');
     }
-  }, [navigate, userInfo.email]);
+  }, [navigate, userInfo]);
 
   const {
     handleSubmit,
     control,
     formState: { errors, isValid, isSubmitting },
   } = useForm({
-    mode: 'onChange',
     resolver: yupResolver(schema),
   });
   const handleSignIn = async values => {
@@ -74,6 +73,9 @@ const SignInPage = () => {
             )}
           </Input>
         </Field>
+        <div className="have-account">
+          You have not had an account? <NavLink to={'/sign-up'}>Sign Up</NavLink>
+        </div>
         <Button
           type="submit"
           style={{
