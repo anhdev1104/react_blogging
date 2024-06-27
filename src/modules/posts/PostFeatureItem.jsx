@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import PostCategory from './PostCategory';
+import PostTitle from './PostTitle';
 const PostFeatureItemStyles = styled.div`
   width: 100%;
   border-radius: 16px;
@@ -38,8 +39,6 @@ const PostFeatureItemStyles = styled.div`
       align-items: center;
       margin-bottom: 16px;
     }
-    &-category {
-    }
     &-info {
       display: flex;
       align-items: center;
@@ -55,13 +54,6 @@ const PostFeatureItemStyles = styled.div`
       height: 4px;
       background-color: currentColor;
       border-radius: 100rem;
-    }
-    &-title {
-      font-weight: bold;
-      line-height: 1.5;
-      display: block;
-      font-size: 22px;
-      color: white;
     }
   }
 
@@ -87,7 +79,7 @@ const PostFeatureItem = () => {
             <span className="post-author">Andiez Le</span>
           </div>
         </div>
-        <h3 className="post-title">Hướng dẫn setup phòng cực chill dành cho người mới toàn tập</h3>
+        <PostTitle size="big">Hướng dẫn setup phòng cực chill dành cho người mới toàn tập</PostTitle>
       </div>
     </PostFeatureItemStyles>
   );

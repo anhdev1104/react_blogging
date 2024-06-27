@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import PostCategory from './PostCategory';
+import PostTitle from './PostTitle';
 const PostNewestLargeStyles = styled.div`
   .post {
     &-image {
@@ -32,11 +33,7 @@ const PostNewestLargeStyles = styled.div`
       border-radius: 100rem;
     }
     &-title {
-      font-weight: bold;
-      line-height: 1.5;
-      display: block;
-      font-size: 22px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
   }
 `;
@@ -51,7 +48,7 @@ const PostNewestLarge = () => {
         />
       </div>
       <PostCategory>Kiến thức</PostCategory>
-      <h3 className="post-title">Hướng dẫn setup phòng cực chill dành cho người mới toàn tập</h3>
+      <PostTitle size="big">Hướng dẫn setup phòng cực chill dành cho người mới toàn tập</PostTitle>
       <div className="post-info">
         <span className="post-time">Mar 23</span>
         <span className="post-dot"></span>
