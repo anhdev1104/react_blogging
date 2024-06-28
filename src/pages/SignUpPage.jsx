@@ -1,9 +1,8 @@
 import Button from '@/components/button';
 import Field from '@/components/field';
-import { IconEyeClose, IconEyeOpen } from '@/components/icon';
 import Input from '@/components/input';
 import Label from '@/components/label';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,6 +12,7 @@ import { auth, db } from '@/firebase/config';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { addDoc, collection } from 'firebase/firestore';
 import AuthPage from './AuthPage';
+import InputPasswordToggle from '@/components/input/InputPasswordToggle';
 
 const schema = yup.object({
   fullname: yup.string().required('Please enter your fullname !'),
@@ -46,7 +46,7 @@ const SignUpPage = () => {
     toast.success('Register successfully !');
     navigate('/');
   };
-  const [togglePassword, setTogglePassword] = useState(false);
+
   useEffect(() => {
     const arrErrors = Object.values(errors);
     if (arrErrors.length > 0) {
@@ -66,18 +66,7 @@ const SignUpPage = () => {
         </Field>
         <Field>
           <Label htmlFor="password">Password</Label>
-          <Input
-            type={togglePassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Enter your password"
-            control={control}
-          >
-            {togglePassword ? (
-              <IconEyeOpen onClick={() => setTogglePassword(false)} />
-            ) : (
-              <IconEyeClose onClick={() => setTogglePassword(true)} />
-            )}
-          </Input>
+          <InputPasswordToggle control={control}></InputPasswordToggle>
         </Field>
         <div className="have-account">
           You already have an account? <NavLink to={'/sign-in'}>Sign In</NavLink>
@@ -85,7 +74,8 @@ const SignUpPage = () => {
         <Button
           type="submit"
           style={{
-            maxWidth: 350,
+            width: '100%',
+            maxWidth: 300,
             margin: '0 auto',
           }}
           isLoading={isSubmitting}

@@ -1,18 +1,18 @@
 import { AuthContext } from '@/contexts/authContext';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import AuthPage from './AuthPage';
 import { useForm } from 'react-hook-form';
 import Field from '@/components/field';
 import Input from '@/components/input';
 import Label from '@/components/label';
-import { IconEyeClose, IconEyeOpen } from '@/components/icon';
 import Button from '@/components/button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { toast } from 'react-toastify';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/firebase/config';
+import InputPasswordToggle from '@/components/input/InputPasswordToggle';
 
 const schema = yup.object({
   email: yup.string().email('Please enter valid email address !').required('Please enter your email address !'),
@@ -20,7 +20,6 @@ const schema = yup.object({
 });
 
 const SignInPage = () => {
-  const [togglePassword, setTogglePassword] = useState(false);
   const { userInfo } = useContext(AuthContext);
   console.log('🚀 ~ SignInPage ~ userInfo:', userInfo);
   const navigate = useNavigate();
@@ -60,18 +59,7 @@ const SignInPage = () => {
         </Field>
         <Field>
           <Label htmlFor="password">Password</Label>
-          <Input
-            type={togglePassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Enter your password"
-            control={control}
-          >
-            {togglePassword ? (
-              <IconEyeOpen onClick={() => setTogglePassword(false)} />
-            ) : (
-              <IconEyeClose onClick={() => setTogglePassword(true)} />
-            )}
-          </Input>
+          <InputPasswordToggle control={control}></InputPasswordToggle>
         </Field>
         <div className="have-account">
           You have not had an account? <NavLink to={'/sign-up'}>Sign Up</NavLink>
@@ -79,7 +67,8 @@ const SignInPage = () => {
         <Button
           type="submit"
           style={{
-            maxWidth: 350,
+            width: '100%',
+            maxWidth: 300,
             margin: '0 auto',
           }}
           isLoading={isSubmitting}
