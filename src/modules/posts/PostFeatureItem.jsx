@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import PostCategory from './PostCategory';
 import PostTitle from './PostTitle';
 import PostMeta from './PostMeta';
+import PostImage from './PostImage';
 const PostFeatureItemStyles = styled.div`
   width: 100%;
   border-radius: 16px;
@@ -11,7 +12,6 @@ const PostFeatureItemStyles = styled.div`
     &-image {
       width: 100%;
       height: 100%;
-      object-fit: cover;
       border-radius: 16px;
     }
     &-overlay {
@@ -49,11 +49,10 @@ const PostFeatureItemStyles = styled.div`
 const PostFeatureItem = () => {
   return (
     <PostFeatureItemStyles>
-      <img
-        src="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2662&q=80"
+      <PostImage
+        url="https://images.unsplash.com/photo-1614624532983-4ce03382d63d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2662&q=80"
         alt="unsplash"
-        className="post-image"
-      />
+      ></PostImage>
       <div className="post-overlay"></div>
       <div className="post-content">
         <div className="post-top">
