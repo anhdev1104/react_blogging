@@ -9,6 +9,10 @@ import { postStatus } from '@/utils/constants';
 import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
 import styled from 'styled-components';
+import ImageUpload from '@/components/image/ImageUpload';
+import { useEffect, useState } from 'react';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/firebase/config';
 const PostAddNewStyles = styled.div``;
 
 const PostAddNew = () => {
@@ -21,12 +25,9 @@ const PostAddNew = () => {
       category: '',
     },
   });
+  const [progress, setProgress] = useState(0);
+  const [image, setImage] = useState();
 
-  const handleSelectImage = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setValue('image', file);
-  };
   const handleUploadImage = file => {
     const storage = getStorage();
     const storageRef = ref(storage, 'images/' + file.name);
@@ -37,8 +38,8 @@ const PostAddNew = () => {
       'state_changed',
       snapshot => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Upload is ' + progress + '% done');
+        const progressBar = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progressBar);
         switch (snapshot.state) {
           case 'paused':
             console.log('Upload is paused');
@@ -74,6 +75,15 @@ const PostAddNew = () => {
       }
     );
   };
+
+  const handleSelectImage = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setValue('image', file);
+    file.preview = URL.createObjectURL(file);
+    setImage(file.preview);
+  };
+
   const watchStatus = watch('status');
   const watchCategory = watch('category');
 
@@ -83,6 +93,10 @@ const PostAddNew = () => {
     cloneValues.status = Number(cloneValues.status);
     handleUploadImage(cloneValues.image);
     console.log(cloneValues);
+    // const colRef = collection(db, 'posts');
+    // await addDoc(colRef, {
+    //   image,
+    // });
   };
   return (
     <PostAddNewStyles>
@@ -101,7 +115,7 @@ const PostAddNew = () => {
         <div className="grid grid-cols-2 gap-x-10 mb-10">
           <Field>
             <Label>Image</Label>
-            <input type="file" name="image" onChange={handleSelectImage} />
+            <ImageUpload onChange={handleSelectImage} progress={progress} image={image} className="h-[250px]" />
           </Field>
           <Field>
             <Label>Status</Label>
