@@ -1,6 +1,5 @@
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import Button from '@/components/button/Button';
-import { Checkbox, Radio } from '@/components/checkbox';
+import { Radio } from '@/components/checkbox';
 import { Dropdown } from '@/components/dropdown';
 import Field from '@/components/field/Field';
 import Input from '@/components/input/Input';
@@ -10,13 +9,13 @@ import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
 import styled from 'styled-components';
 import ImageUpload from '@/components/image/ImageUpload';
-import { useEffect, useState } from 'react';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/firebase/config';
+import useFirebaseImage from '@/hooks/useFirebaseImage';
 const PostAddNewStyles = styled.div``;
 
 const PostAddNew = () => {
-  const { control, watch, setValue, handleSubmit } = useForm({
+  const { control, watch, setValue, handleSubmit, getValues } = useForm({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -25,67 +24,12 @@ const PostAddNew = () => {
       category: '',
     },
   });
-  const [progress, setProgress] = useState(0);
-  const [image, setImage] = useState();
-
-  const handleUploadImage = file => {
-    const storage = getStorage();
-    const storageRef = ref(storage, 'images/' + file.name);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    // Listen for state changes, errors, and completion of the upload.
-    uploadTask.on(
-      'state_changed',
-      snapshot => {
-        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progressBar = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(progressBar);
-        switch (snapshot.state) {
-          case 'paused':
-            console.log('Upload is paused');
-            break;
-          case 'running':
-            console.log('Upload is running');
-            break;
-        }
-      },
-      error => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
-        switch (error.code) {
-          case 'storage/unauthorized':
-            // User doesn't have permission to access the object
-            break;
-          case 'storage/canceled':
-            // User canceled the upload
-            break;
-
-          // ...
-
-          case 'storage/unknown':
-            // Unknown error occurred, inspect error.serverResponse
-            break;
-        }
-      },
-      () => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
-          console.log('File available at', downloadURL);
-        });
-      }
-    );
-  };
-
-  const handleSelectImage = e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setValue('image', file);
-    file.preview = URL.createObjectURL(file);
-    setImage(file.preview);
-  };
-
   const watchStatus = watch('status');
   const watchCategory = watch('category');
+  const { image, progress, handleSelectImage, handleDeleteImage, handleUploadImage } = useFirebaseImage(
+    setValue,
+    getValues
+  );
 
   const addPostHandler = async values => {
     const cloneValues = { ...values };
@@ -98,6 +42,7 @@ const PostAddNew = () => {
     //   image,
     // });
   };
+
   return (
     <PostAddNewStyles>
       <h1 className="dashboard-heading">Add new post</h1>
@@ -115,7 +60,13 @@ const PostAddNew = () => {
         <div className="grid grid-cols-2 gap-x-10 mb-10">
           <Field>
             <Label>Image</Label>
-            <ImageUpload onChange={handleSelectImage} progress={progress} image={image} className="h-[250px]" />
+            <ImageUpload
+              handleDeleteImage={handleDeleteImage}
+              onChange={handleSelectImage}
+              progress={progress}
+              image={image}
+              className="h-[250px]"
+            />
           </Field>
           <Field>
             <Label>Status</Label>
