@@ -13,11 +13,14 @@ import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import useFirebaseImage from '@/hooks/useFirebaseImage';
 import Toggle from '@/components/toggle/Toggle';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/contexts/authContext';
+import { toast } from 'react-toastify';
 const PostAddNewStyles = styled.div``;
 
 const PostAddNew = () => {
-  const { control, watch, setValue, handleSubmit, getValues } = useForm({
+  const { userInfo } = useContext(AuthContext);
+  const { control, watch, setValue, handleSubmit, getValues, reset } = useForm({
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -28,23 +31,33 @@ const PostAddNew = () => {
     },
   });
   const [categories, setCategories] = useState([]);
+  const [selectCategory, setSelectCategory] = useState('');
   const watchStatus = watch('status');
   const watchHot = watch('hot');
-  const { image, progress, handleSelectImage, handleDeleteImage, handleUploadImage } = useFirebaseImage(
+  const { image, progress, setImage, handleSelectImage, handleDeleteImage, handleUploadImage } = useFirebaseImage(
     setValue,
     getValues
   );
 
   const addPostHandler = async values => {
     const cloneValues = { ...values };
-    cloneValues.slug = slugify(cloneValues.slug);
+    cloneValues.slug = slugify(cloneValues.slug || cloneValues.title, { lower: true });
     cloneValues.status = Number(cloneValues.status);
     handleUploadImage(cloneValues?.image);
-    console.log(cloneValues);
-    // const colRef = collection(db, 'posts');
-    // await addDoc(colRef, {
-    //   image,
-    // });
+    const colRef = collection(db, 'posts');
+    await addDoc(colRef, {
+      ...cloneValues,
+      image,
+      userId: userInfo.uid,
+    });
+    toast.success('Tạo bài viết mới thành công !');
+    reset();
+    setImage(undefined);
+    setSelectCategory(null);
+  };
+  const handleClickOption = item => {
+    setValue('categoryId', item.id);
+    setSelectCategory(item.name);
   };
 
   useEffect(() => {
@@ -91,15 +104,21 @@ const PostAddNew = () => {
           <Field>
             <Label>Category</Label>
             <Dropdown>
-              <Dropdown.Select placeholder="Select the category"></Dropdown.Select>
+              <Dropdown.Select placeholder={selectCategory || 'Select the category'}></Dropdown.Select>
               <Dropdown.List>
-                {categories.map(item => (
-                  <Dropdown.Option key={item.id} onClick={() => setValue('categoryId', item.id)}>
-                    {item.name}
-                  </Dropdown.Option>
-                ))}
+                {categories.length > 0 &&
+                  categories.map(item => (
+                    <Dropdown.Option key={item.id} onClick={() => handleClickOption(item)}>
+                      {item.name}
+                    </Dropdown.Option>
+                  ))}
               </Dropdown.List>
             </Dropdown>
+            {selectCategory && (
+              <span className="p-3 capitalize rounded-lg bg-green-50 text-green-500 text-sm font-medium">
+                {selectCategory}
+              </span>
+            )}
           </Field>
 
           {/* <Field>
@@ -110,7 +129,7 @@ const PostAddNew = () => {
         <div className="grid grid-cols-2 gap-x-10 mb-10">
           <Field>
             <Label>Feature post</Label>
-            <Toggle on={watchHot === false} onClick={() => setValue('hot', !watchHot)} />
+            <Toggle on={watchHot === true} onClick={() => setValue('hot', !watchHot)} />
           </Field>
           <Field>
             <Label>Status</Label>

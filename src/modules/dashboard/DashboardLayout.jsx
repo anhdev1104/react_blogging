@@ -2,6 +2,9 @@ import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
 import DashboardHeader from './DashboardHeader';
 import Sidebar from './Sidebar';
+import { useContext } from 'react';
+import { AuthContext } from '@/contexts/authContext';
+import NotFoundPage from '@/pages/NotFoundPage';
 const DashboardStyles = styled.div`
   max-width: 1600px;
   margin: 0 auto;
@@ -23,6 +26,8 @@ const DashboardStyles = styled.div`
   }
 `;
 const DashboardLayout = ({ children }) => {
+  const { userInfo } = useContext(AuthContext);
+  if (!userInfo) return <NotFoundPage></NotFoundPage>;
   return (
     <DashboardStyles>
       <DashboardHeader></DashboardHeader>

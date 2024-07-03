@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 export default function useFirebaseImage(setValue, getValues) {
   const [progress, setProgress] = useState(0);
-  const [image, setImage] = useState();
+  const [image, setImage] = useState('');
   if (!setValue || !getValues) return;
 
   const handleUploadImage = file => {
@@ -73,6 +73,7 @@ export default function useFirebaseImage(setValue, getValues) {
   return {
     image,
     progress,
+    setImage,
     handleSelectImage,
     handleDeleteImage,
     handleUploadImage,
