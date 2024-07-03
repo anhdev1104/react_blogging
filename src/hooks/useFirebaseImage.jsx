@@ -8,7 +8,7 @@ export default function useFirebaseImage(setValue, getValues) {
 
   const handleUploadImage = file => {
     const storage = getStorage();
-    const storageRef = ref(storage, 'images/' + file.name);
+    const storageRef = ref(storage, 'images/' + file?.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
 
     uploadTask.on(

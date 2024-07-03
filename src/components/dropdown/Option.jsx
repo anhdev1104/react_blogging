@@ -1,9 +1,17 @@
 import { useDropdown } from './dropdown-context';
 
 const Option = props => {
-  const { onClick } = useDropdown();
+  const { onClick } = props;
+  const { setShow } = useDropdown();
+  const handleClick = () => {
+    onClick && onClick();
+    setShow(false);
+  };
   return (
-    <div className="px-5 py-4 cursor-pointer flex items-center justify-between hover:bg-gray-100" onClick={onClick}>
+    <div
+      className="px-5 py-4 cursor-pointer capitalize flex items-center justify-between hover:bg-gray-100"
+      onClick={handleClick}
+    >
       {props.children}
     </div>
   );

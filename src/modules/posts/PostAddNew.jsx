@@ -9,9 +9,11 @@ import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
 import styled from 'styled-components';
 import ImageUpload from '@/components/image/ImageUpload';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import useFirebaseImage from '@/hooks/useFirebaseImage';
+import Toggle from '@/components/toggle/Toggle';
+import { useEffect, useState } from 'react';
 const PostAddNewStyles = styled.div``;
 
 const PostAddNew = () => {
@@ -21,11 +23,13 @@ const PostAddNew = () => {
       title: '',
       slug: '',
       status: 2,
-      category: '',
+      categoryId: '',
+      hot: false,
     },
   });
+  const [categories, setCategories] = useState([]);
   const watchStatus = watch('status');
-  const watchCategory = watch('category');
+  const watchHot = watch('hot');
   const { image, progress, handleSelectImage, handleDeleteImage, handleUploadImage } = useFirebaseImage(
     setValue,
     getValues
@@ -35,13 +39,29 @@ const PostAddNew = () => {
     const cloneValues = { ...values };
     cloneValues.slug = slugify(cloneValues.slug);
     cloneValues.status = Number(cloneValues.status);
-    handleUploadImage(cloneValues.image);
+    handleUploadImage(cloneValues?.image);
     console.log(cloneValues);
     // const colRef = collection(db, 'posts');
     // await addDoc(colRef, {
     //   image,
     // });
   };
+
+  useEffect(() => {
+    (async () => {
+      const colRef = collection(db, 'categories');
+      const q = query(colRef, where('status', '==', 1));
+      const querySnapshot = await getDocs(q);
+      const result = [];
+      querySnapshot.forEach(doc => {
+        result.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+      setCategories(result);
+    })();
+  }, []);
 
   return (
     <PostAddNewStyles>
@@ -67,6 +87,30 @@ const PostAddNew = () => {
               image={image}
               className="h-[250px]"
             />
+          </Field>
+          <Field>
+            <Label>Category</Label>
+            <Dropdown>
+              <Dropdown.Select placeholder="Select the category"></Dropdown.Select>
+              <Dropdown.List>
+                {categories.map(item => (
+                  <Dropdown.Option key={item.id} onClick={() => setValue('categoryId', item.id)}>
+                    {item.name}
+                  </Dropdown.Option>
+                ))}
+              </Dropdown.List>
+            </Dropdown>
+          </Field>
+
+          {/* <Field>
+            <Label>Author</Label>
+            <Input control={control} placeholder="Find the author"></Input>
+          </Field> */}
+        </div>
+        <div className="grid grid-cols-2 gap-x-10 mb-10">
+          <Field>
+            <Label>Feature post</Label>
+            <Toggle on={watchHot === false} onClick={() => setValue('hot', !watchHot)} />
           </Field>
           <Field>
             <Label>Status</Label>
@@ -100,23 +144,6 @@ const PostAddNew = () => {
               </Radio>
             </div>
           </Field>
-          <Field>
-            <Label>Author</Label>
-            <Input control={control} placeholder="Find the author"></Input>
-          </Field>
-        </div>
-        <div className="grid grid-cols-2 gap-x-10 mb-10">
-          <Field>
-            <Label>Category</Label>
-            <Dropdown>
-              <Dropdown.Option>Knowledge</Dropdown.Option>
-              <Dropdown.Option>Blockchain</Dropdown.Option>
-              <Dropdown.Option>Setup</Dropdown.Option>
-              <Dropdown.Option>Nature</Dropdown.Option>
-              <Dropdown.Option>Developer</Dropdown.Option>
-            </Dropdown>
-          </Field>
-          <Field></Field>
         </div>
         <Button type="submit" className="mx-auto">
           Add new post
