@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import slugify from 'slugify';
 import styled from 'styled-components';
 import ImageUpload from '@/components/image/ImageUpload';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, serverTimestamp, where } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 import useFirebaseImage from '@/hooks/useFirebaseImage';
 import Toggle from '@/components/toggle/Toggle';
@@ -49,6 +49,7 @@ const PostAddNew = () => {
       ...cloneValues,
       image,
       userId: userInfo.uid,
+      createdAt: serverTimestamp,
     });
     toast.success('Tạo bài viết mới thành công !');
     reset();

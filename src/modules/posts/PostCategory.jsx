@@ -27,7 +27,7 @@ const PostCategoryStyles = styled.div`
 
 const PostCategory = ({ type = 'primary', to = '/', className, children }) => {
   return (
-    <PostCategoryStyles type={type} className={`post-category ${className}`}>
+    <PostCategoryStyles type={type} className={`post-category ${className} capitalize line-clamp-2 text-ellipsis`}>
       <NavLink to={to}>{children}</NavLink>
     </PostCategoryStyles>
   );
