@@ -6,6 +6,7 @@ import PostImage from './PostImage';
 import { useEffect, useState } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
+import slugify from 'slugify';
 const PostFeatureItemStyles = styled.div`
   width: 100%;
   border-radius: 16px;
@@ -52,7 +53,6 @@ const PostFeatureItemStyles = styled.div`
 const PostFeatureItem = ({ data }) => {
   const [category, setCategory] = useState('');
   const [user, setUser] = useState(null);
-  console.log('🚀 ~ PostFeatureItem ~ user:', user);
   useEffect(() => {
     (async () => {
       const docRef = doc(db, 'categories', data.categoryId);
@@ -70,14 +70,21 @@ const PostFeatureItem = ({ data }) => {
     })();
   }, [data.userId]);
   if (!data || !data.id) return null;
+  const date = data.createdAt?.seconds ? new Date(data?.createdAt?.seconds * 1000) : new Date();
+  const formatDate = new Date(date).toLocaleDateString('vi-VI');
+
   return (
     <PostFeatureItemStyles>
       <PostImage url={data.image} alt={data.slug}></PostImage>
       <div className="post-overlay"></div>
       <div className="post-content">
         <div className="post-top">
-          {category.name && <PostCategory>{category.name}</PostCategory>}
-          <PostMeta authorName={user?.fullname} />
+          {category.name && <PostCategory to={category.slug}>{category.name}</PostCategory>}
+          <PostMeta
+            to={slugify(user?.fullname || '', { lower: true })}
+            authorName={user?.fullname}
+            date={formatDate || ''}
+          />
         </div>
         <PostTitle size="big">{data.title}</PostTitle>
       </div>

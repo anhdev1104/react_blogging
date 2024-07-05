@@ -8,7 +8,6 @@ const HomeFeatureStyles = styled.div``;
 
 const HomeFeature = () => {
   const [posts, setPosts] = useState([]);
-  console.log('🚀 ~ HomeFeature ~ posts:', posts);
   useEffect(() => {
     const colRef = collection(db, 'posts');
     const q = query(colRef, where('status', '==', 1), where('hot', '==', true));

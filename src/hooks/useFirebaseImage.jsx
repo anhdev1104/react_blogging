@@ -70,10 +70,15 @@ export default function useFirebaseImage(setValue, getValues) {
         console.log(error);
       });
   };
+
+  const handleResetImage = () => {
+    setImage('');
+    setProgress(0);
+  };
   return {
     image,
     progress,
-    setImage,
+    handleResetImage,
     handleSelectImage,
     handleDeleteImage,
     handleUploadImage,

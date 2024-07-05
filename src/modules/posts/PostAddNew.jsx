@@ -34,27 +34,33 @@ const PostAddNew = () => {
   const [selectCategory, setSelectCategory] = useState('');
   const watchStatus = watch('status');
   const watchHot = watch('hot');
-  const { image, progress, setImage, handleSelectImage, handleDeleteImage, handleUploadImage } = useFirebaseImage(
-    setValue,
-    getValues
-  );
+  const { image, progress, handleResetImage, handleSelectImage, handleDeleteImage, handleUploadImage } =
+    useFirebaseImage(setValue, getValues);
+  const [loading, setLoading] = useState(false);
 
   const addPostHandler = async values => {
-    const cloneValues = { ...values };
-    cloneValues.slug = slugify(cloneValues.slug || cloneValues.title, { lower: true });
-    cloneValues.status = Number(cloneValues.status);
-    handleUploadImage(cloneValues?.image);
-    const colRef = collection(db, 'posts');
-    await addDoc(colRef, {
-      ...cloneValues,
-      image,
-      userId: userInfo.uid,
-      createdAt: serverTimestamp,
-    });
-    toast.success('Tạo bài viết mới thành công !');
-    reset();
-    setImage(undefined);
-    setSelectCategory(null);
+    setLoading(true);
+    try {
+      const cloneValues = { ...values };
+      cloneValues.slug = slugify(cloneValues.slug || cloneValues.title, { lower: true });
+      cloneValues.status = Number(cloneValues.status);
+      handleUploadImage(cloneValues?.image);
+      const colRef = collection(db, 'posts');
+      await addDoc(colRef, {
+        ...cloneValues,
+        image,
+        userId: userInfo.uid,
+        createdAt: serverTimestamp(),
+      });
+      toast.success('Tạo bài viết mới thành công !');
+      reset();
+      handleResetImage();
+      setSelectCategory(null);
+    } catch (error) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
   const handleClickOption = item => {
     setValue('categoryId', item.id);
@@ -165,7 +171,7 @@ const PostAddNew = () => {
             </div>
           </Field>
         </div>
-        <Button type="submit" className="mx-auto">
+        <Button type="submit" className="mx-auto w-[168px]" isLoading={loading} disabled={loading}>
           Add new post
         </Button>
       </form>
