@@ -32,6 +32,12 @@ const ButtonStyles = styled.button`
         ${props => props.theme.secondary}
       );
     `};
+  ${props =>
+    props.kind === 'ghost' &&
+    css`
+      color: ${props => props.theme.primary};
+      background-color: rgba(29, 192, 113, 0.1);
+    `};
   &:hover {
     opacity: 0.8;
   }
