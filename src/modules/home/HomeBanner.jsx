@@ -42,7 +42,7 @@ const HomeBanner = () => {
               esse facilis! Quaerat voluptates possimus dolorem officiis pariatur, repellat, cupiditate porro, quidem
               molestiae impedit laudantium neque quo!
             </p>
-            <Button to="/sign-up" kind="secondary">
+            <Button type="button" to="/sign-up" kind="secondary">
               Get started
             </Button>
           </div>
