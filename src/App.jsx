@@ -11,24 +11,26 @@ import PostManage from './modules/posts/PostManage';
 import PostAddNew from './modules/posts/PostAddNew';
 import CategoryAddNew from './modules/category/CategoryAddNew';
 import CategoryManage from './modules/category/CategoryManage';
+import CategoryUpdate from './modules/category/CategoryUpdate';
 
 function App() {
   return (
     <>
       <AuthProvider>
         <Routes>
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="/sign-up" element={<SignUpPage />}></Route>
-          <Route path="/sign-in" element={<SignInPage />}></Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/sign-in" element={<SignInPage />} />
 
-          <Route path="*" element={<NotFoundPage />}></Route>
-          <Route path="/:slug" element={<PostDetailsPage />}></Route>
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/:slug" element={<PostDetailsPage />} />
           <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />}></Route>
-            <Route path="/manage/post" element={<PostManage />}></Route>
-            <Route path="/manage/add-post" element={<PostAddNew />}></Route>
-            <Route path="/manage/category" element={<CategoryManage />}></Route>
-            <Route path="/manage/add-category" element={<CategoryAddNew />}></Route>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/manage/post" element={<PostManage />} />
+            <Route path="/manage/add-post" element={<PostAddNew />} />
+            <Route path="/manage/category" element={<CategoryManage />} />
+            <Route path="/manage/add-category" element={<CategoryAddNew />} />
+            <Route path="/manage/update-category" element={<CategoryUpdate />} />
           </Route>
         </Routes>
       </AuthProvider>
