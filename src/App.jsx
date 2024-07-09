@@ -1,17 +1,19 @@
 import { Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/authContext';
-import SignUpPage from './pages/SignUpPage';
-import SignInPage from './pages/SignInPage';
-import HomePage from './pages/HomePage';
-import NotFoundPage from './pages/NotFoundPage';
-import PostDetailsPage from './pages/PostDetailsPage';
-import DashboardLayout from './modules/dashboard/DashboardLayout';
-import DashboardPage from './pages/DashboardPage';
-import PostManage from './modules/posts/PostManage';
-import PostAddNew from './modules/posts/PostAddNew';
 import CategoryAddNew from './modules/category/CategoryAddNew';
 import CategoryManage from './modules/category/CategoryManage';
 import CategoryUpdate from './modules/category/CategoryUpdate';
+import DashboardLayout from './modules/dashboard/DashboardLayout';
+import PostAddNew from './modules/posts/PostAddNew';
+import PostManage from './modules/posts/PostManage';
+import UserAddNew from './modules/user/UserAddNew';
+import UserManage from './modules/user/UserManage';
+import DashboardPage from './pages/DashboardPage';
+import HomePage from './pages/HomePage';
+import NotFoundPage from './pages/NotFoundPage';
+import PostDetailsPage from './pages/PostDetailsPage';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
             <Route path="/manage/category" element={<CategoryManage />} />
             <Route path="/manage/add-category" element={<CategoryAddNew />} />
             <Route path="/manage/update-category" element={<CategoryUpdate />} />
+            <Route path="/manage/user" element={<UserManage />} />
+            <Route path="/manage/add-user" element={<UserAddNew />} />
           </Route>
         </Routes>
       </AuthProvider>
